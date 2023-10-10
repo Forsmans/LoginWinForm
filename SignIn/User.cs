@@ -49,7 +49,6 @@ namespace SignIn
             }
             else
             {
-                // Hash the user's password
                 string hashedPassword = HashPassword(user.Password);
 
                 using (StreamWriter writer = new StreamWriter(filePath, true))
@@ -57,7 +56,7 @@ namespace SignIn
                     writer.Write($"{user.FirstName},");
                     writer.Write($"{user.LastName},");
                     writer.Write($"{user.Username},");
-                    writer.Write($"{hashedPassword}"); // Save the hashed password
+                    writer.Write($"{hashedPassword}"); 
                     writer.WriteLine();
                 }
             }

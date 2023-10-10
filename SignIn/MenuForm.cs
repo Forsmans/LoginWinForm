@@ -12,7 +12,7 @@ namespace SignIn
 {
     public partial class MenuForm : Form
     {
-        
+
         public MenuForm()
         {
             InitializeComponent();
@@ -22,13 +22,18 @@ namespace SignIn
         {
             this.Hide();
             Start.signUp.Show();
-            
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
             Start.signIn.Show();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

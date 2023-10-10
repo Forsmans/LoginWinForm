@@ -15,14 +15,16 @@ namespace SignIn
         public ProgramForm(User user)
         {
             InitializeComponent();
-            
+
             welcomeLabel.Text = $"Welcome {user.FirstName} {user.LastName}";
 
-            
+
         }
 
-       
-
-        
+        private void logoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            Start.startMenu.Show();
+        }
     }
 }
