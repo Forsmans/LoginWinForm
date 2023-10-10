@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +24,21 @@ namespace SignIn
             Username = username;
             Password = password;
         }
+        public static string HashPassword(string password)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
 
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
+        }
         public void SaveUserToTxt(User user)
         {
             string filePath = "userslogins.txt";
@@ -29,20 +46,24 @@ namespace SignIn
             if (IsUsernameTaken(user.Username))
             {
                 MessageBox.Show("Username is already taken. Please choose a different one.");
-                
             }
             else
             {
+                // Hash the user's password
+                string hashedPassword = HashPassword(user.Password);
+
                 using (StreamWriter writer = new StreamWriter(filePath, true))
                 {
                     writer.Write($"{user.FirstName},");
                     writer.Write($"{user.LastName},");
                     writer.Write($"{user.Username},");
-                    writer.Write($"{user.Password}");
+                    writer.Write($"{hashedPassword}"); // Save the hashed password
                     writer.WriteLine();
                 }
             }
         }
+
+
 
         public static User CheckUserLogin(string username, string password)
         {
@@ -60,11 +81,13 @@ namespace SignIn
                         string firstName = userData[0];
                         string lastName = userData[1];
                         string storedUsername = userData[2];
-                        string storedPassword = userData[3];
+                        string storedHashedPassword = userData[3]; 
+                        
+                        string inputHashedPassword = HashPassword(password);
 
-                        if (storedUsername == username && storedPassword == password)
+                        if (storedUsername == username && storedHashedPassword == inputHashedPassword)
                         {
-                            return new User(firstName, lastName, storedUsername, storedPassword);
+                            return new User(firstName, lastName, storedUsername, storedHashedPassword);
                         }
                     }
                 }
@@ -72,13 +95,6 @@ namespace SignIn
 
             return null;
         }
-
-
-
-
-
-
-
 
         public bool IsUsernameTaken(string username)
         {
@@ -103,8 +119,11 @@ namespace SignIn
                 }
             }
 
-            return false; 
+            return false;
         }
+
+
+
 
 
 

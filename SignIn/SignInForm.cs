@@ -29,7 +29,6 @@ namespace SignIn
 
             if (loggedInUser != null)
             {
-
                 ProgramForm program = new ProgramForm(loggedInUser);
 
                 MessageBox.Show($"Login successful.");
