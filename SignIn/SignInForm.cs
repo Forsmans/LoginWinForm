@@ -23,14 +23,19 @@ namespace SignIn
             SignUpForms signUp = new SignUpForms();
             signUp.Show();
         }
-        private void logInButton_Click(object sender, EventArgs e)
+        public void logInButton_Click(object sender, EventArgs e)
         {
             User loggedInUser = User.CheckUserLogin(usernameBox.Text, passwordBox.Text);
 
             if (loggedInUser != null)
             {
 
-                MessageBox.Show($"Login successful. Welcome {loggedInUser.FirstName} {loggedInUser.LastName}");
+                ProgramForm program = new ProgramForm(loggedInUser);
+
+                MessageBox.Show($"Login successful.");
+
+                this.Hide();
+                program.Show();
             }
             else
             {

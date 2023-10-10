@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace SignIn
 {
@@ -28,24 +29,34 @@ namespace SignIn
 
         private void signUpButton_Click(object sender, EventArgs e)
         {
-            if(firstNameBox.Text != "" && lastNameBox.Text != "" && usernameBox.Text != "" && passwordBox.Text != "")
+            if (firstNameBox.Text != "" && lastNameBox.Text != "" && usernameBox.Text != "" && passwordBox.Text != "")
             {
                 User user = new User(firstNameBox.Text, lastNameBox.Text, usernameBox.Text, passwordBox.Text);
-                users.Add(user);
-                user.SaveUserToTxt(user);
 
-                MessageBox.Show("Register successful!");
-                
-                this.Hide();
-                SignInForm signIn = new SignInForm();
-                signIn.Show();
+                if (user.IsUsernameTaken(user.Username))
+                {
+                    MessageBox.Show("Username is already taken. Please choose a different one.");
+                }
+                else
+                {
+                    user.SaveUserToTxt(user);
+                    MessageBox.Show("Registration successful!");
+
+                    this.Hide();
+                    Start.signIn.Show();
+                }
             }
             else
             {
                 MessageBox.Show("All fields are not filled");
             }
-
         }
+
+
+
+
+
+
 
         private void label5_Click(object sender, EventArgs e)
         {

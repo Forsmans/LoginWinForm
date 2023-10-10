@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SignIn
 {
-    internal class User
+    public class User
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -25,13 +26,21 @@ namespace SignIn
         {
             string filePath = "userslogins.txt";
 
-            using (StreamWriter writer = new StreamWriter(filePath, true))
+            if (IsUsernameTaken(user.Username))
             {
-                writer.Write($"{user.FirstName},");
-                writer.Write($"{user.LastName},");
-                writer.Write($"{user.Username},");
-                writer.Write($"{user.Password}");
-                writer.WriteLine();
+                MessageBox.Show("Username is already taken. Please choose a different one.");
+                
+            }
+            else
+            {
+                using (StreamWriter writer = new StreamWriter(filePath, true))
+                {
+                    writer.Write($"{user.FirstName},");
+                    writer.Write($"{user.LastName},");
+                    writer.Write($"{user.Username},");
+                    writer.Write($"{user.Password}");
+                    writer.WriteLine();
+                }
             }
         }
 
@@ -39,28 +48,65 @@ namespace SignIn
         {
             string filePath = "userslogins.txt";
 
-            string[] lines = File.ReadAllLines(filePath);
-
-            foreach (string line in lines)
+            using (StreamReader reader = new StreamReader(filePath))
             {
-                string[] userData = line.Split(',');
-
-                if(userData.Length == 4)
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    string firstName = userData[0];
-                    string lastName = userData[1];
-                    string storedUsername = userData[2];
-                    string storedPassword = userData[3];
+                    string[] userData = line.Split(',');
 
-                    if(storedUsername == username && storedPassword == password)
+                    if (userData.Length == 4)
                     {
-                        return new User(firstName, lastName, storedUsername, storedPassword);
+                        string firstName = userData[0];
+                        string lastName = userData[1];
+                        string storedUsername = userData[2];
+                        string storedPassword = userData[3];
+
+                        if (storedUsername == username && storedPassword == password)
+                        {
+                            return new User(firstName, lastName, storedUsername, storedPassword);
+                        }
                     }
                 }
             }
 
             return null;
         }
+
+
+
+
+
+
+
+
+        public bool IsUsernameTaken(string username)
+        {
+            string filePath = "userslogins.txt";
+
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] userData = line.Split(',');
+
+                    if (userData.Length >= 3)
+                    {
+                        string storedUsername = userData[2];
+
+                        if (storedUsername == username)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false; 
+        }
+
+
 
     }
 }

@@ -10,5 +10,6 @@ namespace SignIn
     {
         public static SignUpForms signUp = new SignUpForms();
         public static SignInForm signIn = new SignInForm();
+        
     }
 }
